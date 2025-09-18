@@ -1,5 +1,6 @@
 import {Router} from 'express';
-import { ClientController } from '../controllers/clientController.controller.js';
+import clientRoutes from './client.routes';
+import phonesRoutes from './phones.routes';
 
 const router = Router();
 
@@ -7,8 +8,7 @@ router.get('/', (req, res) => {
     res.send('API corriendo');
 });
 
-// Obtener todos los clientes
-router.get('/clients', ClientController.getAllClients);
-
+router.use('/clients', clientRoutes);
+router.use('/phones',phonesRoutes);
 
 export default router;

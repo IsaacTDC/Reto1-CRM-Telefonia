@@ -1,7 +1,7 @@
-import config from './config.js';
+import config from './config';
 import express,  {Request, Response } from 'express';
-import {initDB} from './db.js';
-import indexRoutes from '../routes/indexRoutes.js';
+import {pool} from './db';
+import indexRoutes from '../routes/indexRoutes';
 
 
 export default class Server {
@@ -27,10 +27,8 @@ export default class Server {
         return this.port;
     }
 
-    public start() {
-        this.app.listen(this.port, () => {
-            console.log(`Servidor escuchando en el puerto ${this.port}`);
-            initDB();
-        });
+    public start(callback: (app: express.Application) => void) {
+        this.app.listen(this.port, () => callback (this.app)) ;
+        //console.log(`Servidor escuchando en el puerto ${this.port}`);
     }
 }
