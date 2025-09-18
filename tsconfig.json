@@ -1,13 +1,12 @@
 {
   "compilerOptions": {
-    "target": "esnext",
-    "module": "nodenext",
+    "target": "es2016",
+    "module": "commonjs",
     "outDir": "dist",
     "strict": true,
     "esModuleInterop": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "moduleResolution": "nodenext",
     "sourceMap": true
   }
 }

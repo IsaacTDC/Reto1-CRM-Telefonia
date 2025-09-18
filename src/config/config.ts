@@ -1,6 +1,6 @@
 import * as dotenv from "dotenv";
+import Joi from "joi";
 
-const Joi = require ("joi");
 
 const config = dotenv.config({path: "./.env"});
 
@@ -13,7 +13,7 @@ const envSchema = Joi.object({ //configuramos las validaciones con JOI
     DB_USER: Joi.string().required(),
     DB_PASSWORD: Joi.string().required(),
     DB_NAME: Joi.string().required(),
-    DB_PORT: Joi.number().default(),
+    DB_PORT: Joi.number().default(3306),
     PORT: Joi.number().default(3000),
 }).unknown(true);
 

@@ -1,3 +1,6 @@
-//import {connection} from "./config/db.js";
+import  Server  from './config/express.js';
 
-console.log("ejecutando");
+const server = new Server();
+const PORT = server.getPort();
+
+server.start();
