@@ -1,26 +1,29 @@
 import { Component, OnInit } from '@angular/core';
 import { PhonesService } from '../services/phones.service';
 import {ClientsService} from '../services/clients.service';
+import { ClientsTableComponent } from './clients-table/clients-table.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-home',
-  imports: [],
+  imports: [CommonModule,ClientsTableComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
 export class HomeComponent implements OnInit {
-  data: any[] = [];
+  clients: any[] = [];
 
   constructor(private apiService: ClientsService){}
 
-  ngOnInit(): void {
+  ngOnInit(): void { //llamamamos a la api al inicar el componente
     this.llamarApi();
   }
 
   llamarApi(){
-    this.apiService.getAllClients().subscribe( data => {
-      this.data = data["data"];
-      console.log(this.data);
+    this.apiService.getAllClients().subscribe( res => {
+      this.clients = res.data;
+      console.log(this.clients);
     });
   }
+
 }
