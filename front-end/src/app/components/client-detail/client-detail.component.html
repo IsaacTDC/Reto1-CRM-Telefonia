@@ -1,0 +1,10 @@
+<div *ngIf="client">
+  <h3>{{ client.nombre }} </h3>
+  <h4>DNI:{{ client.dni }}</h4>
+  <p>Fecha de alta: {{ client.fechaAlta }}</p>
+
+  <h4>Teléfonos:</h4>
+  <ul>
+    <li *ngFor="let phone of phones">{{ phone.numero }}</li>
+  </ul>
+</div>
