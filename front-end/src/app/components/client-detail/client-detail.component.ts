@@ -9,13 +9,15 @@ import { PhonesService } from '../../services/phones.service';
   templateUrl: './client-detail.component.html',
   styleUrl: './client-detail.component.scss'
 })
-export class ClientDetailComponent {
+export class ClientDetailComponent implements OnInit{
   @Input() client: any;
   phones: any[] =[];
 
   constructor(private apiService: PhonesService){}
   
-
+  ngOnInit(): void {
+    this.getPhones();
+  }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['client'] && this.client?.id) {
       this.getPhones();

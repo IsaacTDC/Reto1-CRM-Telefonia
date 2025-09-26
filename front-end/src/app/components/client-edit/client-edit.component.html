@@ -1,0 +1,15 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-3">
+  <div>
+    <label>Nombre:</label>
+    <input type="text" pInputText formControlName="nombre" />
+  </div>
+
+  <div>
+    <label>DNI:</label>
+    <input type="text" pInputText formControlName="dni" />
+  </div>
+
+  <div class="flex justify-end gap-2 mt-3">
+    <button pButton type="submit" label="Guardar" [disabled]="form.invalid || saving"></button>
+  </div>
+</form>

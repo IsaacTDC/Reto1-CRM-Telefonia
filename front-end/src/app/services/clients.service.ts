@@ -15,4 +15,9 @@ export class ClientsService {
     return this.http.get(this.apiUrl);
   }
 
+  updateClient(id:number, body:any){
+    console.log(id , body);
+    return this.http.put(`${this.apiUrl}/${id}`, body);
+  }
+
 }
