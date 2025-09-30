@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, Output } from '@angular/core';
 import { TableModule } from 'primeng/table';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
@@ -7,8 +7,15 @@ import { ClientDetailComponent } from '../client-detail/client-detail.component'
 import { PhonesService } from '../../services/phones.service';
 import { ClientEditComponent } from '../client-edit/client-edit.component';
 import { ClientsService } from '../../services/clients.service';
-import { MessageService } from 'primeng/api';
-import { finalize } from 'rxjs/operators';
+import { MessageService, ConfirmationService } from 'primeng/api';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule,FormsModule  } from '@angular/forms';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { InputTextModule } from 'primeng/inputtext';
+import { SelectModule } from 'primeng/select';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+
 @Component({
   selector: 'app-client-table',
   imports: [TableModule,
@@ -16,14 +23,18 @@ import { finalize } from 'rxjs/operators';
             ButtonModule,
             DialogModule,
             ClientDetailComponent,
-            ClientEditComponent
+            ClientEditComponent,
+            ReactiveFormsModule,
+            FormsModule,
+            InputGroupModule, InputGroupAddonModule, InputTextModule, SelectModule, InputNumberModule,
+            ConfirmDialogModule
   ],
-  providers: [MessageService], 
+  providers: [MessageService,ConfirmationService], 
   templateUrl: './client-table.component.html',
   styleUrl: './client-table.component.scss'
 })
-export class ClientTableComponent {
-  @Input() clients: any[] = [];
+export class ClientTableComponent implements OnInit{
+  clients: any[] = [];
   
 
   selectedClient: any = null;
@@ -32,20 +43,49 @@ export class ClientTableComponent {
   editDialog = false;   // modal de edicion
   editingClient: any = null;
 
+  newClientForm!: FormGroup; //formulario para añadir cliente
+  newClient: any = { nombre: '', dni: '', telefonos: [{ numero: '' }] };//variable para la ceración de clientes con telefonos
+
   saving = false; // indica que estamos guardando en backend
 
-  constructor(private phoneService: PhonesService,
+  constructor(private fb: FormBuilder,
               private clientService: ClientsService,
-              private messageService: MessageService
+              private messageService: MessageService,
+              private confirmationService: ConfirmationService
   ){}
+
+  ngOnInit() {
+    this.llamarApi();
+    this.newClientForm = this.fb.group({
+      nombre: ['', Validators.required],
+      dni: ['', Validators.required]
+    });
+    
+  }
+
+  llamarApi(){
+    this.clientService.getAllClients().subscribe( res => {
+      this.clients = res.data;
+      console.log(this.clients);
+    });
+  }
+
+  ngOnchanges(){
+    //this.llamarApi();
+  }
 
   showDetails(client: any){
     this.selectedClient = client;
     this.displayDialog = true;
   } 
 
-  editUser(client: any){
-    this.editingClient = {...client}; //hacemos un clon usando el cliente
+  editUser(client: any) {
+    this.editingClient = {
+      ...client,
+      telefonos: client.Telefono
+        ? client.Telefono.map((t: any) => ({ id: t.id, numero: t.numero }))
+        : []
+    };
     this.editDialog = true;
   }
 
@@ -56,10 +96,14 @@ export class ClientTableComponent {
       return;
     }
 
-    // construir payload: normalmente solo mandas los campos editables
+    // construir payload<----------repasa esto y argumentos
     const payload = {
       nombre: updatedClient.nombre,
-      dni: updatedClient.dni
+      dni: updatedClient.dni,
+      telefonos: updatedClient.telefonos?.map((t: any) => ({
+        id: t.id,       // 👈 ahora incluimos el id si existe
+        numero: t.numero
+      })) || []
     };
 
     this.saving = true;
@@ -85,8 +129,55 @@ export class ClientTableComponent {
     });
   }
 
-  addPhone(cliente: any){
+  addPhone() {
+    this.newClient.telefonos.push({ numero: '' });
+  }
 
+  removePhone(index: number) {
+    this.newClient.telefonos.splice(index, 1);
+  }
+
+  addClient() {
+    if (!this.newClient.nombre || !this.newClient.dni) return;
+    /* const payload = this.newClientForm.value;
+    this.saving = true; //actulizamos la variable de carga */
+
+    
+    this.clientService.createClient(this.newClient).subscribe({ //llamamos la servicio
+      next: (res: any) => {
+        //console.log(res);
+        this.clients.push(res.data); //añadimos a la tabla
+        this.newClient = { nombre: '', dni: '', telefonos: [] }; // reset
+        this.newClientForm.reset();
+        this.saving = false;
+      },
+      error: (err) => {
+        console.error('Error createClient', err);
+        this.saving = false;
+      }
+    });
+  }
+
+  deleteClient(client: any) {
+    console.log(client);
+    this.confirmationService.confirm({
+      message: `¿Estás seguro de eliminar a ${client.nombre}?`,
+      header: 'Confirmación',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Sí',
+      rejectLabel: 'No',
+      accept: () => {
+        this.clientService.deleteClient(client.id).subscribe({
+          next: () => {
+            // actualizar lista local
+            this.clients = this.clients.filter(c => c.id !== client.id);
+          },
+          error: (err) => {
+            console.error('Error al eliminar cliente', err);
+          }
+        });
+      }
+    });
   }
 
 }

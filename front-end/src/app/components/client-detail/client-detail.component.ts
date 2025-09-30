@@ -26,12 +26,10 @@ export class ClientDetailComponent implements OnInit{
 
   public getPhones(){
     this.apiService.getPhonesByClientId(this.client.id).subscribe(res =>{
-        this.phones = res.data;
-        console.log(res.data);
-      });
+      this.phones = res.data;
+      //console.log(res.data);
+    });
   }
-
-  
 
 }
 

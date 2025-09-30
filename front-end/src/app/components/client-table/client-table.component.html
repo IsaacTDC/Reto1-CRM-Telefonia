@@ -25,6 +25,12 @@
                     [rounded]="false"
                     (onClick)="editUser(client)">
                 </p-button>
+                <p-button 
+                    icon="pi pi-trash"
+                    severity="danger" 
+                    [rounded]="false"
+                    (onClick)="deleteClient(client)">
+                </p-button>
             </td>
         </tr>
     </ng-template>
@@ -44,3 +50,47 @@
     (save)="onSaveClient($event)">
   </app-client-edit>
 </p-dialog>
+
+<p-confirmDialog></p-confirmDialog>
+
+<div class="card p-4 mt-4">
+  <h3> Nuevo Cliente</h3>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+    <!-- Nombre -->
+    <p-inputgroup>
+      <p-inputgroup-addon>
+        <i class="pi pi-user"></i>
+      </p-inputgroup-addon>
+      <input pInputText [(ngModel)]="newClient.nombre" placeholder="Nombre" />
+    </p-inputgroup>
+
+    <!-- DNI -->
+    <p-inputgroup>
+      <p-inputgroup-addon>
+        <i class="pi pi-id-card"></i>
+      </p-inputgroup-addon>
+      <input pInputText [(ngModel)]="newClient.dni" placeholder="DNI" />
+    </p-inputgroup>
+
+    <!-- Teléfonos -->
+    <div class="col-span-2">
+      <label class="block mb-2 font-semibold">Teléfonos</label>
+      <div *ngFor="let tel of newClient.telefonos; let i = index" class="flex items-center gap-2 mb-2">
+        <p-inputgroup class="flex-1">
+          <p-inputgroup-addon>
+            <i class="pi pi-phone"></i>
+          </p-inputgroup-addon>
+          <input pInputText [(ngModel)]="tel.numero" placeholder="Número de teléfono" />
+        </p-inputgroup>
+        <button pButton icon="pi pi-times" severity="danger" (click)="removePhone(i)"></button>
+      </div>
+      <button pButton label="Añadir teléfono" icon="pi pi-plus" (click)="addPhone()"></button>
+    </div>
+  </div>
+
+  <!-- Botón guardar -->
+  <div class="mt-4">
+    <button pButton label="Crear Cliente" icon="pi pi-check" (click)="addClient()"></button>
+  </div>
+</div>

@@ -23,6 +23,6 @@ export class Telefono{
     id_cliente!: number */
 
     @ManyToOne(() => Cliente, (Cliente) => Cliente.Telefono, { onDelete: "SET NULL" })
-    @JoinColumn({ name: "id" })
+    @JoinColumn({ name: "id_cliente" })
     Cliente!: Cliente | null;
 }

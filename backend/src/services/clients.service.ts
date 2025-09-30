@@ -8,36 +8,58 @@ export class ClientsService {
         return await AppDataSource.getRepository(Cliente).find();
     }
 
+    //Obtiene u cliente por el id
     public static async getClientById(id: number){
         return await AppDataSource.getRepository(Cliente).findOneBy({id});
     }
 
-    public static async updateClient(id: number, payload: Partial<Cliente>){
-        const repository = AppDataSource.getRepository(Cliente);
+    //actualiza la información del cliente
+    public static async updateClient(id: number, clientData: any) {
+        const repo = AppDataSource.getRepository(Cliente);
 
-        const client = await repository.findOneBy({ id }); //buscomaos el cliente
-        //sino esta emitimos un error
-        if(!client){
-            const err: any = new Error("No se encontró el cliente");
-            err.code = 'NOT_FOUND';
-            throw err;
-        }
+        // Buscamos el cliente actual con sus teléfonos
+        const client = await repo.findOne({
+            where: { id },
+            relations: ['Telefono']
+        });
 
-        //si se qeuire cambiar el dni comprobamos si ya se usa
-        // --------->Debertia cambiar estop pq no se debe poder cambiar de dni +info para dar juego <---------
-        if (payload.dni && payload.dni !== client.dni) {
-            const existing = await repository.findOne({ where: { dni: payload.dni } });
-            if (existing) {
-                const err: any = new Error('DNI en uso');
-                err.code = 'DNI_CONFLICT';
-                throw err;
-            }
-        }
+        if (!client) throw new Error('Cliente no encontrado');
 
-        //si todo ha ido bien guardamos 
-        repository.merge(client, payload);
-        const saved = await repository.save(client);
+        // Actualizamos los campos básicos
+        client.nombre = clientData.nombre;
+        client.dni = clientData.dni;
+
+        // Reemplazamos los teléfonos (elimina los antiguos y guarda los nuevos)
+        client.Telefono = (clientData.telefonos || []).map((t: any) =>
+            repo.manager.getRepository('Telefono').create({
+            id: t.id,         // si viene id lo actualiza
+            numero: t.numero  // si no viene id crea uno nuevo
+            })
+        );
+
+        const saved = await repo.save(client);
         return saved;
     }
 
+    public static async createClient(clientData: any) {
+        console.log(clientData);
+        const repo = AppDataSource.getRepository(Cliente);
+        const client = repo.create({
+            nombre: clientData.nombre,
+            dni: clientData.dni,
+            Telefono: (clientData.telefonos || []).map((t: any) => ({
+                numero: t.numero
+            }))
+        });
+        console.log(client);
+        const saved = await repo.save(client);
+        return saved;
+    }
+
+    public static async deleteClient(id : number){
+        const repo = AppDataSource.getRepository(Cliente);
+        return await repo.delete(id);
+    }
+
+    
 };

@@ -1,15 +1,39 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-3">
-  <div>
-    <label>Nombre:</label>
-    <input type="text" pInputText formControlName="nombre" />
-  </div>
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="p-4">
+  <!-- Nombre -->
+  <p-inputgroup>
+    <p-inputgroup-addon>
+      <i class="pi pi-user"></i>
+    </p-inputgroup-addon>
+    <input pInputText formControlName="nombre" placeholder="Nombre" />
+  </p-inputgroup>
 
-  <div>
-    <label>DNI:</label>
-    <input type="text" pInputText formControlName="dni" />
-  </div>
+  <!-- DNI -->
+  <p-inputgroup class="mt-3">
+    <p-inputgroup-addon>
+      <i class="pi pi-id-card"></i>
+    </p-inputgroup-addon>
+    <input pInputText formControlName="dni" placeholder="DNI" />
+  </p-inputgroup>
 
-  <div class="flex justify-end gap-2 mt-3">
-    <button pButton type="submit" label="Guardar" [disabled]="form.invalid || saving"></button>
+  <!-- Teléfonos -->
+  <div class="mt-4">
+  <label class="block mb-2 font-semibold">Teléfonos</label>
+  <div formArrayName="telefonos">
+    <div *ngFor="let tel of telefonos.controls; let i = index" [formGroupName]="i" class="flex items-center gap-2 mb-2">
+      <p-inputgroup class="flex-1">
+        <p-inputgroup-addon>
+          <i class="pi pi-phone"></i>
+        </p-inputgroup-addon>
+        <input pInputText formControlName="numero" placeholder="Número de teléfono" />
+      </p-inputgroup>
+      <button pButton icon="pi pi-times" severity="danger" (click)="removePhone(i)" type="button"></button>
+    </div>
+  </div>
+  <button pButton label="Añadir teléfono" icon="pi pi-plus" (click)="addPhone()" type="button"></button>
+</div>
+
+  <!-- Botón guardar -->
+  <div class="mt-4">
+    <button pButton label="Guardar cambios" icon="pi pi-check" type="submit" [disabled]="saving"></button>
   </div>
 </form>

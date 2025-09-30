@@ -21,6 +21,6 @@ export class Cliente{
     @CreateDateColumn({type: "datetime",name: "fecha_alta"})
     fechaAlta!: Date
 
-    @OneToMany(() => Telefono, (Telefono) => Telefono.Cliente)
+    @OneToMany(() => Telefono, (Telefono) => Telefono.Cliente,{cascade:true})
     Telefono!: Telefono[];
 }

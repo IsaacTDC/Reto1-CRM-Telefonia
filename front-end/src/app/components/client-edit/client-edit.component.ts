@@ -5,16 +5,21 @@ import { ButtonModule } from 'primeng/button';
 import { ClientsService } from '../../services/clients.service';
 import { PhonesService } from '../../services/phones.service';
 import { MessageService } from 'primeng/api';
+import { InputGroup } from "primeng/inputgroup";
+import { InputGroupAddonModule } from "primeng/inputgroupaddon";
+import { FormArray } from '@angular/forms';
 
 
 @Component({
   selector: 'app-client-edit',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, ButtonModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, ButtonModule, InputGroup, InputGroupAddonModule],
   templateUrl: './client-edit.component.html',
   styleUrl: './client-edit.component.scss'
 })
 export class ClientEditComponent {
+[x: string]: any;
   @Input() client: any ;
+  @Input() editingClient: any;
   @Output() save = new EventEmitter <any>();
   @Input() saving = false; 
   form!: FormGroup;
@@ -27,19 +32,40 @@ export class ClientEditComponent {
 
   ngOnChanges(changes: SimpleChanges) { //SimpleChanges muy útil en fomrularios <-------------revisa
     if (changes['client'] && this.client) {
-      // Reinicializamos formulario cada vez que cambie el cliente
       this.form = this.formBuilder.group({
         nombre: [this.client.nombre || '', Validators.required],
-        dni: [this.client.dni || '', Validators.required]
+        dni: [this.client.dni || '', Validators.required],
+        telefonos: this.formBuilder.array(
+          this.client?.telefonos?.map((t: any) =>
+            this.formBuilder.group({
+              id: [t.id || null],
+              numero: [t.numero, Validators.required]
+            })
+          ) || []
+        )
       });
     }
   }
 
+  get telefonos() {
+    return this.form.get('telefonos') as FormArray;
+  }
+
+  addPhone() {
+    this.telefonos.push(this.formBuilder.group({ numero: [''] }));
+  }
+
+  removePhone(index: number) {
+    this.telefonos.removeAt(index);
+  }
+
   onSubmit() {
     if (this.form.valid) {
-      //console.log(this.form.value);
+      console.log(this.form);
       const updatedClient = { ...this.client, ...this.form.value };
       this.save.emit(updatedClient);
     }
   }
+
+
 }

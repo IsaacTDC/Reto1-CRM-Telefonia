@@ -45,6 +45,38 @@ export class ClientController {
         }
     }
 
+    public static async createClient(req : Request, res: Response){
+        let response = new RespGeneric();
+        try{
+            const create = await ClientsService.createClient(req.body);
+            response.data = create;
+            response.msg = "Cliente creado con exito";
+            response.cod = 200;
+        }catch(error){
+            response.msg = "No se ha podido crear el cliente";
+            response.cod = 500;
+        }
+        return res.json(response);
+    }
+
+    public static async deleteClient(req : Request, res: Response){
+        let response = new RespGeneric();
+        try{
+            const id = Number(req.params.id);
+            const result = await ClientsService.deleteClient(id);
+            if (result.affected === 0) {
+             return res.status(404).json({ message: 'Cliente no encontrado' });
+            }
+            response.data = {};
+            response.msg = "Cliente eliminado con exito";
+            response.cod = 200;
+        }catch(error){
+            response.msg = "No se ha eliminado el cliente";
+            response.cod = 500;
+        }
+        return res.json(response);
+    }
+
     
 };
 
