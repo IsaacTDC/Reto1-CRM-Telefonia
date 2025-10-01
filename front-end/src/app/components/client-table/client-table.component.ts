@@ -60,13 +60,12 @@ export class ClientTableComponent implements OnInit{
       nombre: ['', Validators.required],
       dni: ['', Validators.required]
     });
-    
   }
 
   llamarApi(){
     this.clientService.getAllClients().subscribe( res => {
       this.clients = res.data;
-      console.log(this.clients);
+      //console.log(this.clients);
     });
   }
 
@@ -80,28 +79,29 @@ export class ClientTableComponent implements OnInit{
   } 
 
   editUser(client: any) {
+    //console.log(client);
     this.editingClient = {
       ...client,
       telefonos: client.Telefono
         ? client.Telefono.map((t: any) => ({ id: t.id, numero: t.numero }))
         : []
     };
+    
     this.editDialog = true;
   }
-
   onSaveClient(updatedClient: any) {
     const id = updatedClient.id;
     if (!id) {
       this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Cliente sin id' });
       return;
     }
-
+    console.log(updatedClient);
     // construir payload<----------repasa esto y argumentos
     const payload = {
       nombre: updatedClient.nombre,
       dni: updatedClient.dni,
       telefonos: updatedClient.telefonos?.map((t: any) => ({
-        id: t.id,       // 👈 ahora incluimos el id si existe
+        id: t.id,       //ahora incluimos el id si existe
         numero: t.numero
       })) || []
     };

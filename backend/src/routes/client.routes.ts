@@ -5,8 +5,8 @@ const router = Router();
 
 router.get('/', ClientController.getAllClients);
 router.get('/:id', ClientController.getClientById);
-// editar cliente
-router.put('/:id', ClientController.updateClient);
+
+router.put('/:id', ClientController.updateClient);// editar cliente
 router.post('/', ClientController.createClient);
 router.delete('/:id',ClientController.deleteClient);
 

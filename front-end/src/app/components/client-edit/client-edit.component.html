@@ -17,20 +17,20 @@
 
   <!-- Teléfonos -->
   <div class="mt-4">
-  <label class="block mb-2 font-semibold">Teléfonos</label>
-  <div formArrayName="telefonos">
-    <div *ngFor="let tel of telefonos.controls; let i = index" [formGroupName]="i" class="flex items-center gap-2 mb-2">
-      <p-inputgroup class="flex-1">
-        <p-inputgroup-addon>
-          <i class="pi pi-phone"></i>
-        </p-inputgroup-addon>
-        <input pInputText formControlName="numero" placeholder="Número de teléfono" />
-      </p-inputgroup>
-      <button pButton icon="pi pi-times" severity="danger" (click)="removePhone(i)" type="button"></button>
+    <label class="block mb-2 font-semibold">Teléfonos</label>
+    <div formArrayName="telefonos">
+      <div *ngFor="let tel of telefonos.controls; let i = index" [formGroupName]="i" class="flex items-center gap-2 mb-2">
+        <p-inputgroup class="flex-1">
+          <p-inputgroup-addon>
+            <i class="pi pi-phone"></i>
+          </p-inputgroup-addon>
+          <input pInputText formControlName="numero" placeholder="Número de teléfono" />
+        </p-inputgroup>
+        <button pButton icon="pi pi-times" severity="danger" (click)="removePhone(i)" type="button"></button>
+      </div>
     </div>
+    <button pButton label="Añadir teléfono" icon="pi pi-plus" (click)="addPhone()" type="button"></button>
   </div>
-  <button pButton label="Añadir teléfono" icon="pi pi-plus" (click)="addPhone()" type="button"></button>
-</div>
 
   <!-- Botón guardar -->
   <div class="mt-4">

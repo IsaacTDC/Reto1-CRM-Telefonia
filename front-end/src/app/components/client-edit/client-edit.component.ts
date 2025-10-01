@@ -2,9 +2,6 @@ import { Component,Input, Output, EventEmitter, SimpleChanges } from '@angular/c
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
-import { ClientsService } from '../../services/clients.service';
-import { PhonesService } from '../../services/phones.service';
-import { MessageService } from 'primeng/api';
 import { InputGroup } from "primeng/inputgroup";
 import { InputGroupAddonModule } from "primeng/inputgroupaddon";
 import { FormArray } from '@angular/forms';
@@ -20,14 +17,13 @@ export class ClientEditComponent {
 [x: string]: any;
   @Input() client: any ;
   @Input() editingClient: any;
-  @Output() save = new EventEmitter <any>();
   @Input() saving = false; 
+  @Output() save = new EventEmitter <any>();
+  
   form!: FormGroup;
-  //
 
   constructor(
     private formBuilder: FormBuilder,
-    
   ) {}
 
   ngOnChanges(changes: SimpleChanges) { //SimpleChanges muy útil en fomrularios <-------------revisa

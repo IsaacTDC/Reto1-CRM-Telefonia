@@ -11,6 +11,7 @@ import { PhonesService } from '../../services/phones.service';
 })
 export class ClientDetailComponent implements OnInit{
   @Input() client: any;
+  @Input() telefonos: any[] = [];
   phones: any[] =[];
 
   constructor(private apiService: PhonesService){}
@@ -18,6 +19,7 @@ export class ClientDetailComponent implements OnInit{
   ngOnInit(): void {
     this.getPhones();
   }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['client'] && this.client?.id) {
       this.getPhones();
@@ -27,7 +29,7 @@ export class ClientDetailComponent implements OnInit{
   public getPhones(){
     this.apiService.getPhonesByClientId(this.client.id).subscribe(res =>{
       this.phones = res.data;
-      //console.log(res.data);
+      console.log(res.data);
     });
   }
 

@@ -5,7 +5,9 @@ import { Cliente } from '../entities/client.entity';
 export class ClientsService {
 
     public static async getAllClients() {
-        return await AppDataSource.getRepository(Cliente).find();
+        return await AppDataSource.getRepository(Cliente).find({
+            relations: ['Telefono'],   //esto trae también los teléfonos
+        });
     }
 
     //Obtiene u cliente por el id
@@ -17,28 +19,18 @@ export class ClientsService {
     public static async updateClient(id: number, clientData: any) {
         const repo = AppDataSource.getRepository(Cliente);
 
-        // Buscamos el cliente actual con sus teléfonos
-        const client = await repo.findOne({
-            where: { id },
-            relations: ['Telefono']
+        const client = await repo.findOne({ where: { id }, relations: ['Telefono'] });
+        if (!client) {
+            throw new Error(`Cliente con id ${id} no encontrado`);
+        }
+
+        repo.merge(client, {
+            nombre: clientData.nombre,
+            dni: clientData.dni,
+            Telefono: clientData.telefonos
         });
 
-        if (!client) throw new Error('Cliente no encontrado');
-
-        // Actualizamos los campos básicos
-        client.nombre = clientData.nombre;
-        client.dni = clientData.dni;
-
-        // Reemplazamos los teléfonos (elimina los antiguos y guarda los nuevos)
-        client.Telefono = (clientData.telefonos || []).map((t: any) =>
-            repo.manager.getRepository('Telefono').create({
-            id: t.id,         // si viene id lo actualiza
-            numero: t.numero  // si no viene id crea uno nuevo
-            })
-        );
-
-        const saved = await repo.save(client);
-        return saved;
+        return await repo.save(client);
     }
 
     public static async createClient(clientData: any) {

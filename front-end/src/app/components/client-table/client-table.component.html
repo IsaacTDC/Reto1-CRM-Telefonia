@@ -43,6 +43,7 @@
   <app-client-detail *ngIf="selectedClient" [client]="selectedClient"></app-client-detail>
 </p-dialog>
 
+<!-- Dialog de edición -->
 <p-dialog [(visible)]="editDialog" [modal]="true" [style]="{width: '400px'}" header="Editar Cliente">
   <app-client-edit 
     *ngIf="editingClient"
@@ -51,6 +52,7 @@
   </app-client-edit>
 </p-dialog>
 
+<!-- Dialog de confirmación al eliminar -->
 <p-confirmDialog></p-confirmDialog>
 
 <div class="card p-4 mt-4">
