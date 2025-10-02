@@ -14,7 +14,6 @@ import { FormArray } from '@angular/forms';
   styleUrl: './client-edit.component.scss'
 })
 export class ClientEditComponent {
-[x: string]: any;
   @Input() client: any ;
   @Input() editingClient: any;
   @Input() saving = false; 
@@ -57,7 +56,7 @@ export class ClientEditComponent {
 
   onSubmit() {
     if (this.form.valid) {
-      console.log(this.form);
+      //console.log(this.client);
       const updatedClient = { ...this.client, ...this.form.value };
       this.save.emit(updatedClient);
     }

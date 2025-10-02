@@ -78,7 +78,7 @@ export class ClientTableComponent implements OnInit{
     this.displayDialog = true;
   } 
 
-  editUser(client: any) {
+  public  editUser(client: any) {
     //console.log(client);
     this.editingClient = {
       ...client,
@@ -89,6 +89,7 @@ export class ClientTableComponent implements OnInit{
     
     this.editDialog = true;
   }
+  
   onSaveClient(updatedClient: any) {
     const id = updatedClient.id;
     if (!id) {

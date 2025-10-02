@@ -14,7 +14,10 @@ export class PhonesController{
         }catch(error){
             console.error(error);
             res.status(500).json({message: 'Error al obtener el telefonos', error});
+            response.data = (error as Error);
+            response.msg =  'Error al obtener el telefonos';
+            response.cod = 500;
         }
-        res.json(response);
+        return res.json(response);
     };
 }
