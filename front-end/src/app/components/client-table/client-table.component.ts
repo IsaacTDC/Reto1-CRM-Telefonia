@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnChanges, Output } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, Output, ChangeDetectorRef } from '@angular/core';
 import { TableModule } from 'primeng/table';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
@@ -35,7 +35,6 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 })
 export class ClientTableComponent implements OnInit{
   clients: any[] = [];
-  
 
   selectedClient: any = null;
   displayDialog = false; //modal para mostrar la información
@@ -44,14 +43,15 @@ export class ClientTableComponent implements OnInit{
   editingClient: any = null;
 
   newClientForm!: FormGroup; //formulario para añadir cliente
-  newClient: any = { nombre: '', dni: '', telefonos: [{ numero: '' }] };//variable para la ceración de clientes con telefonos
+  newClient: any = { nombre: '', dni: '', Telefono: [{ numero: '' }] };//variable para la ceración de clientes con telefonos
 
   saving = false; // indica que estamos guardando en backend
 
   constructor(private fb: FormBuilder,
               private clientService: ClientsService,
               private messageService: MessageService,
-              private confirmationService: ConfirmationService
+              private confirmationService: ConfirmationService,
+              private cdr: ChangeDetectorRef
   ){}
 
   ngOnInit() {
@@ -82,7 +82,7 @@ export class ClientTableComponent implements OnInit{
     //console.log(client);
     this.editingClient = {
       ...client,
-      telefonos: client.Telefono
+      Telefono: client.Telefono
         ? client.Telefono.map((t: any) => ({ id: t.id, numero: t.numero }))
         : []
     };
@@ -101,10 +101,10 @@ export class ClientTableComponent implements OnInit{
     const payload = {
       nombre: updatedClient.nombre,
       dni: updatedClient.dni,
-      telefonos: updatedClient.telefonos?.map((t: any) => ({
-        id: t.id,       //ahora incluimos el id si existe
-        numero: t.numero
-      })) || []
+      Telefono: updatedClient.Telefono.map((t: any, i: number) => ({
+        id: t.id ?? null,        // si existe, lo mandamos
+        numero: t.numero         // el número siempre
+      }))
     };
 
     this.saving = true;
@@ -131,11 +131,11 @@ export class ClientTableComponent implements OnInit{
   }
 
   addPhone() {
-    this.newClient.telefonos.push({ numero: '' });
+    this.newClient.Telefono.push({ numero: '' });
   }
 
   removePhone(index: number) {
-    this.newClient.telefonos.splice(index, 1);
+    this.newClient.Telefono.splice(index, 1);
   }
 
   addClient() {
@@ -148,7 +148,7 @@ export class ClientTableComponent implements OnInit{
       next: (res: any) => {
         //console.log(res);
         this.clients.push(res.data); //añadimos a la tabla
-        this.newClient = { nombre: '', dni: '', telefonos: [] }; // reset
+        this.newClient = { nombre: '', dni: '', Telefono: [] }; // reset
         this.newClientForm.reset();
         this.saving = false;
       },

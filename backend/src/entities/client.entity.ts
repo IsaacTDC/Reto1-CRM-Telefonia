@@ -22,8 +22,6 @@ export class Cliente{
     fechaAlta!: Date
 
     @OneToMany(() => Telefono, (Telefono) => Telefono.Cliente,{
-        cascade:true,
-        eager: true,
-        orphanedRowAction: 'delete'})
+        cascade:true})
     Telefono!: Telefono[];
 }

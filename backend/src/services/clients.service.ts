@@ -22,86 +22,60 @@ export class ClientsService {
         const phoneRepo = AppDataSource.getRepository(Telefono);
 
         const client = await repo.findOne({
-            where: { id }
+            where: { id },
+            relations: ['Telefono'],
         });
-        console.log(clientData);
-        console.log(client);
 
         if (!client) {
             throw new Error(`Cliente con id ${id} no encontrado`);
         }
 
-        const incomingIds = clientData.telefonos.map((t: any) => t.id);
-
-        // 1. Desvincular teléfonos que el cliente tenía pero ya no están en clientData
-        for (const tel of client.Telefono) {
-            if (!incomingIds.includes(tel.id)) {
-                tel.Cliente = null; // quitar relación
-                await phoneRepo.save(tel);
-            }
-        }
-
-        // 2. Actualizar o crear teléfonos que llegan en clientData
-        const updatedTelefonos: Telefono[] = [];
-        for (const tel of clientData.telefonos) {
-            let telefono: Telefono | null = null;
-
-            if (tel.id) {
-                telefono = await phoneRepo.findOne({
-                    where: { id: tel.id },
-                    relations: ['Cliente']
-                });
-                if (telefono) {
-                    telefono.numero = tel.numero;
-                    telefono.Cliente = client;
-                }
-            }
-
-            if (!telefono) {
-                telefono = phoneRepo.create({
-                    numero: tel.numero,
-                    Cliente: client,
-                    fechaContrato: new Date().toISOString() //
-                }) as Telefono; //
-            }
-
-            await phoneRepo.save(telefono);
-            updatedTelefonos.push(telefono);
-        }
-
-        // 3. Actualizar datos básicos del cliente
+        // Actualizar campos básicos
         client.nombre = clientData.nombre;
         client.dni = clientData.dni;
-        client.Telefono = updatedTelefonos;
 
-        await repo.save(client);
+        // Extraer los IDs que vienen del front
+        const incomingIds = clientData.Telefono.filter((t: any) => t.id).map((t: any) => t.id);
 
-        // Retornar objeto plano
-        return {
-            id: client.id,
-            nombre: client.nombre,
-            dni: client.dni,
-            fechaAlta: client.fechaAlta,
-            telefonos: updatedTelefonos.map(t => ({
-                id: t.id,
-                numero: t.numero,
-                fechaContrato: t.fechaContrato
-            }))
-        };
+        // Desvincular los que ya no estén
+        const phonesToUnlink = client.Telefono.filter(t => !incomingIds.includes(t.id));
+        if (phonesToUnlink.length > 0) {
+            for (const phone of phonesToUnlink) {
+            phone.Cliente = null;
+            await phoneRepo.save(phone);
+            }
+        }
+
+        // Asociar los que vienen (nuevos + existentes)
+        client.Telefono = await Promise.all(
+            clientData.Telefono.map(async (t: any) => {
+            if (t.id) {
+                // Teléfono existente → actualizar número si cambió
+                const phone = await phoneRepo.findOneBy({ id: t.id });
+                if (phone) {
+                phone.numero = t.numero;
+                phone.Cliente = client;
+                return await phoneRepo.save(phone);
+                }
+            }
+            // Teléfono nuevo
+            return phoneRepo.create({ numero: t.numero, Cliente: client });
+            })
+        );
+
+        return await repo.save(client);
     }
 
     public static async createClient(clientData: any) {
-        console.log(clientData);
+        console.log("En añadir cliente q llega",clientData);
         const repo = AppDataSource.getRepository(Cliente);
         const client = repo.create({
             nombre: clientData.nombre,
             dni: clientData.dni,
-            Telefono: (clientData.telefonos || []).map((t: any) => ({
-                numero: t.numero
-            }))
+            Telefono: clientData.Telefono
         });
-        console.log(client);
-        const saved = await repo.save(client);
+        console.log("En añadir cliente back",client);
+        const saved = await repo.save(clientData);
         return saved;
     }
 

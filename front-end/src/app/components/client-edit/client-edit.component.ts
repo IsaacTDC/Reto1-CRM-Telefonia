@@ -1,4 +1,4 @@
-import { Component,Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
+import { Component,Input, Output, EventEmitter, SimpleChanges, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -22,7 +22,7 @@ export class ClientEditComponent {
   form!: FormGroup;
 
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: FormBuilder
   ) {}
 
   ngOnChanges(changes: SimpleChanges) { //SimpleChanges muy útil en fomrularios <-------------revisa
@@ -30,34 +30,39 @@ export class ClientEditComponent {
       this.form = this.formBuilder.group({
         nombre: [this.client.nombre || '', Validators.required],
         dni: [this.client.dni || '', Validators.required],
-        telefonos: this.formBuilder.array(
-          this.client?.telefonos?.map((t: any) =>
-            this.formBuilder.group({
-              id: [t.id || null],
-              numero: [t.numero, Validators.required]
-            })
+        Telefono: this.formBuilder.array(
+          this.client?.Telefono?.map((t: any) =>
+            this.formBuilder.control(t.numero, Validators.required)
           ) || []
         )
       });
     }
   }
 
-  get telefonos() {
-    return this.form.get('telefonos') as FormArray;
+  get Telefono() {
+    return this.form.get('Telefono') as FormArray;
   }
 
   addPhone() {
-    this.telefonos.push(this.formBuilder.group({ numero: [''] }));
+    this.Telefono.push(this.formBuilder.control('', Validators.required));
   }
 
   removePhone(index: number) {
-    this.telefonos.removeAt(index);
+    this.Telefono.removeAt(index);
   }
 
   onSubmit() {
     if (this.form.valid) {
-      //console.log(this.client);
-      const updatedClient = { ...this.client, ...this.form.value };
+      const updatedClient = {
+        ...this.client,
+        ...this.form.value,
+        Telefono: this.form.value.Telefono.map((num: string, i: number) => {
+          const original = this.client.Telefono[i];
+          return original
+            ? { id: original.id, numero: num } // si ya existía, mando el id
+            : { numero: num };                 // si es nuevo, solo número
+        })
+      };
       this.save.emit(updatedClient);
     }
   }

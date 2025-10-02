@@ -18,13 +18,13 @@
   <!-- Teléfonos -->
   <div class="mt-4">
     <label class="block mb-2 font-semibold">Teléfonos</label>
-    <div formArrayName="telefonos">
-      <div *ngFor="let tel of telefonos.controls; let i = index" [formGroupName]="i" class="flex items-center gap-2 mb-2">
+    <div formArrayName="Telefono">
+      <div *ngFor="let tel of Telefono.controls; let i = index" class="flex items-center gap-2 mb-2">
         <p-inputgroup class="flex-1">
           <p-inputgroup-addon>
             <i class="pi pi-phone"></i>
           </p-inputgroup-addon>
-          <input pInputText formControlName="numero" placeholder="Número de teléfono" />
+          <input pInputText [formControlName]="i" placeholder="Número de teléfono" />
         </p-inputgroup>
         <button pButton icon="pi pi-times" severity="danger" (click)="removePhone(i)" type="button"></button>
       </div>
