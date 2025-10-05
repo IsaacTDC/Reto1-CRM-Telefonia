@@ -6,6 +6,7 @@ import { Entity,
          ManyToOne,
          JoinColumn } from "typeorm";
 import {Cliente} from './client.entity'
+import { Consumo } from "./consumption.entity";
 
 
 @Entity({name: 'TELEFONOS'})
@@ -19,10 +20,9 @@ export class Telefono{
     @CreateDateColumn({ type: "timestamp", name: "fecha_contrato" })
     fechaContrato!: string
 
-    /* @Column({ type:"int", nullable: true })
-    id_cliente!: number */
-
     @ManyToOne(() => Cliente, (Cliente) => Cliente.Telefono, { onDelete: "SET NULL" })
     @JoinColumn({ name: "id_cliente" })
     Cliente!: Cliente | null;
+    @OneToMany(() => Consumo, (consumo) => consumo.telefono, { cascade: true })
+    consumos!: Consumo[];
 }

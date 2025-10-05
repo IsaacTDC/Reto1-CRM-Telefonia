@@ -14,7 +14,7 @@ export const AppDataSource = new DataSource({ //objeto para typeorm
     password: ENV.db.password,
     database: ENV.db.database,
     entities: [path.join(__dirname, "../entities/*")],
-    //synchronize: true,
+    synchronize: true,
     //logging: false,
 })
 

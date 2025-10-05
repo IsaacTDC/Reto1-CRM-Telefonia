@@ -37,6 +37,7 @@ export class ClientController {
         try {
             const updated = await ClientsService.updateClient(id, req.body);
             return res.json({ msg: 'Cliente actualizado'});
+
         } catch (err: any) {
             if (err.code === 'NOT_FOUND') return res.status(404).json({ message: err.message });
             if (err.code === 'DNI_CONFLICT') return res.status(409).json({ message: err.message });
