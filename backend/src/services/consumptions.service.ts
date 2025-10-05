@@ -9,6 +9,8 @@ export interface ConsumptionNottId{
     consumo: number; 
     telefonoId: number
 }
+
+
 export class ConsumptionsService{
 
     private static consumRepo = AppDataSource.getRepository(Consumo);

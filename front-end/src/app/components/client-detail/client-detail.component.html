@@ -5,6 +5,28 @@
 
   <h4>Teléfonos:</h4>
   <ul>
-    <li *ngFor="let phone of phones">{{ phone.numero }}</li>
+    <li *ngFor="let phone of phones" class="flex items-center justify-between gap-2">
+      <span>{{ phone.numero }}</span>
+      <button
+        pButton
+        icon="pi pi-chart-line"
+        label="Ver consumos"
+        (click)="consumptionsModal(phone)">
+      </button>
+    </li>
   </ul>
 </div>
+
+<!-- Dialog para los consumos -->
+<p-dialog
+  [(visible)]="displayConsumptions"
+  [modal]="true"
+  [style]="{width: '600px'}"
+  header="Consumos del teléfono"
+  (onHide)="closeConsumptionsModal()"
+>
+  <app-phone-consumptions
+    *ngIf="selectedPhone"
+    [phone]="selectedPhone">
+  </app-phone-consumptions>
+</p-dialog>

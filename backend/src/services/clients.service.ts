@@ -6,14 +6,15 @@ import { Cliente } from '../entities/client.entity';
 export class ClientsService {
 
     public static async getAllClients() {
-        return await AppDataSource.getRepository(Cliente).find({
-            relations: ['Telefono'],   //esto trae también los teléfonos
-        });
+        return await AppDataSource.getRepository(Cliente).find();
     }
 
     //Obtiene u cliente por el id
     public static async getClientById(id: number){
-        return await AppDataSource.getRepository(Cliente).findOneBy({id});
+        return await AppDataSource.getRepository(Cliente).findOne({
+            where: { id },
+            relations: ['Telefono'],
+        });
     }
 
     //actualiza la información del cliente

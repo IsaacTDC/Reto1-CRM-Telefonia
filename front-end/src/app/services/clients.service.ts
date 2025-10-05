@@ -27,5 +27,9 @@ export class ClientsService {
   deleteClient(id: number) {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
+
+  getClientById(id : number){
+    return this.http.get(`${this.apiUrl}/${id}`);
+  }
   
 }

@@ -74,18 +74,18 @@ export class ClientTableComponent implements OnInit{
   }
 
   showDetails(client: any){
-    this.selectedClient = client;
+    this.clientService.getClientById(client.id).subscribe( res =>{
+      this.selectedClient = res;
+    });
+    //console.log(this.selectedClient);
     this.displayDialog = true;
   } 
 
   public  editUser(client: any) {
-    //console.log(client);
-    this.editingClient = {
-      ...client,
-      Telefono: client.Telefono
-        ? client.Telefono.map((t: any) => ({ id: t.id, numero: t.numero }))
-        : []
-    };
+
+    this.clientService.getClientById(client.id).subscribe( res =>{
+      this.editingClient = res;
+    });
     
     this.editDialog = true;
   }
@@ -140,10 +140,7 @@ export class ClientTableComponent implements OnInit{
 
   addClient() {
     if (!this.newClient.nombre || !this.newClient.dni) return;
-    /* const payload = this.newClientForm.value;
-    this.saving = true; //actulizamos la variable de carga */
-
-    
+  
     this.clientService.createClient(this.newClient).subscribe({ //llamamos la servicio
       next: (res: any) => {
         //console.log(res);
