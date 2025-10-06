@@ -18,22 +18,25 @@ export class ConsumptionController {
             response.msg = "Consumo creado con éxito";
             response.data = created;
 
-            return res.json(response);
-
         } catch (error: any) {
             if (error.code === "NOT_FOUND") {
-            return res.status(404).json({ message: error.message });
+                return res.status(404).json({ message: error.message });
             }
             if (error.code === "DUPLICATE_CONSUMPTION") {
-            return res.status(400).json({ message: error.message });
+                //return res.status(400).json({ message: error.message });
+                response.cod = 400;
+                response.msg = error.message;
+                response.data = [];
+                return res.status(400).json(response);
             }
             if(error.code === "INVALID_MONTH"){//enviamos el error de la comprobacion  
-            return res.status(400).json({ message: error.message });
+                return res.status(400).json({ message: error.message });
             }
 
             console.error(error);
             return res.status(500).json({ message: "Error al crear consumo" });
         }
+        return res.json(response);
     }
 
     public static async getConsumptionsByPhoneAndYear(req: Request, res: Response){
@@ -44,17 +47,25 @@ export class ConsumptionController {
             const anio = Number (req.params.anio);
 
             const consumos = await ConsumptionsService.getConsumptionByPhoneAndYear(telefonoId, anio);
+            console.log(consumos);
             response.cod = 200;
             response.msg = "Cnsumos obtenidos con éxito";
             response.data = consumos;
-            return res.json(response);
+            ;
         }catch(error: any){
             if(error.code === "NOT_FOUND"){
-                return res.status(404).json({ message: error.message })
+                //return res.status(404).json({ message: error.message })
+                response.cod = 404;
+                response.msg = "No hay consumos para este año";
+                response.data = [];
             }
             console.error(error);
-            return res.status(500).json({ message: "Error al obtener consumos" });
+            //return res.status(500).json({ message: "Error al obtener consumos" });
+            response.cod = 500;
+            response.msg = "Error al obtener consumos";
+            response.data = [];
         }
+        return res.json(response)
     }
 
     public static async updateConsumption(req: Request, res: Response){

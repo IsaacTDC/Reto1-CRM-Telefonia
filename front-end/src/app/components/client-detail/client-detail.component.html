@@ -1,32 +1,56 @@
-<div *ngIf="client">
-  <h3>{{ client.nombre }} </h3>
-  <h4>DNI:{{ client.dni }}</h4>
-  <p>Fecha de alta: {{ client.fechaAlta }}</p>
+<div *ngIf="client" class="p-4">
+  <!-- Información del cliente -->
+  <div class="mb-4">
+    <h2 class="text-2xl font-semibold text-primary mb-2">
+      {{ client.nombre }}
+    </h2>
+    <div class="text-gray-600 space-y-1">
+      <p><strong>DNI:</strong> {{ client.dni }}</p>
+      <p><strong>Fecha de alta:</strong> {{ client.fechaAlta | date: 'dd/MM/yyyy' }}</p>
+    </div>
+  </div>
 
-  <h4>Teléfonos:</h4>
-  <ul>
-    <li *ngFor="let phone of phones" class="flex items-center justify-between gap-2">
-      <span>{{ phone.numero }}</span>
-      <button
-        pButton
-        icon="pi pi-chart-line"
-        label="Ver consumos"
-        (click)="consumptionsModal(phone)">
-      </button>
-    </li>
-  </ul>
+  <!-- Lista de teléfonos -->
+  <div>
+    <h3 class="text-lg font-medium mb-2 flex items-center gap-2">
+      <i class="pi pi-phone text-primary"></i> Teléfonos
+    </h3>
+
+    <ul class="space-y-2">
+      <li
+        *ngFor="let phone of phones"
+        class="flex items-center justify-between bg-surface-50 p-3 rounded-lg shadow-sm hover:shadow-md transition"
+      >
+        <div class="flex items-center gap-2">
+          <i class="pi pi-mobile text-blue-500"></i>
+          <span class="font-medium">{{ phone.numero }}</span>
+        </div>
+
+        <div class="flex gap-2">
+          <p-button
+            icon="pi pi-chart-bar"
+            label="Ver consumos"
+            severity="info"
+            rounded
+            size="small"
+            (onClick)="consumptionsModal(phone)"
+          ></p-button>
+        </div>
+      </li>
+    </ul>
+  </div>
 </div>
 
 <!-- Dialog para los consumos -->
 <p-dialog
   [(visible)]="displayConsumptions"
   [modal]="true"
-  [style]="{width: '600px'}"
+  [style]="{ width: '500px', height: '7000px' }"
   header="Consumos del teléfono"
   (onHide)="closeConsumptionsModal()"
 >
   <app-phone-consumptions
     *ngIf="selectedPhone"
-    [phone]="selectedPhone">
-  </app-phone-consumptions>
+    [phone]="selectedPhone"
+  ></app-phone-consumptions>
 </p-dialog>

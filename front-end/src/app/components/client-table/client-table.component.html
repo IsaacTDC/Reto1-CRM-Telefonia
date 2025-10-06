@@ -36,9 +36,10 @@
     </ng-template>
 </p-table>
 
+<!-- Detalle -->
 <p-dialog [(visible)]="displayDialog" 
           [modal]="true" 
-          [style]="{width: '400px'}" 
+          [style]="{width: '600px', height: '1000px'}" 
           header="Detalle del Cliente">
   <app-client-detail *ngIf="selectedClient" [client]="selectedClient"></app-client-detail>
 </p-dialog>
