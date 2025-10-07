@@ -1,5 +1,14 @@
 <div class="p-fluid">
-  <h3 class="mb-3">Consumos del teléfono {{ phone?.numero }}</h3>
+  <div class="flex flex-wrap align-items-end gap-3 mb-4 bg-gray-50 p-3 rounded-lg shadow-sm no-print">
+    <h3 class="mb-0">Consumos del teléfono {{ phone?.numero }}</h3>
+    <div class="no-print">
+      <p-button
+        icon="pi pi-file-pdf"
+        label="Exportar a PDF"
+        (click)="exportToPDF()"
+      ></p-button>
+    </div>
+  </div>
 
   <!-- Selector de año -->
   <div class="flex align-items-center gap-3 mb-4">
@@ -59,6 +68,7 @@
     *ngIf="consumptions?.length"
     [consumos]="consumptions"
     [year]="selectedYear"
+    [summary]="summaryData"
   ></app-consumption-chart>
   
   <!-- Tabla de consumos -->
@@ -111,9 +121,9 @@
     </ng-template>
   </p-table>
 
-    <div *ngIf="!consumptions.length && !errorMsg" class="text-gray-500">
-        Selecciona un año para ver los consumos.
-    </div>
+  <div *ngIf="!consumptions.length && !errorMsg" class="text-gray-500">
+      Selecciona un año para ver los consumos.
+  </div>
 
 </div>
 

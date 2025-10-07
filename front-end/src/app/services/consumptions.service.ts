@@ -26,4 +26,9 @@ export class ConsumptionsService {
   delete(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
+
+  getConsumptionSummary(phoneId: number, year: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/summary/${phoneId}/${year}`);
+  }
+
 }

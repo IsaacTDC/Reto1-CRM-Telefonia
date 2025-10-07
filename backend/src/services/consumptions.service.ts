@@ -106,4 +106,27 @@ export class ConsumptionsService{
             throw error;
         }
     }
+
+    public static async getConsumptionSummaryByPhoneAndYear(telefonoId: number, anio: number) {
+        const result = await this.consumRepo
+            .createQueryBuilder("consumo")
+            .select("MAX(consumo.consumo)", "max")
+            .addSelect("MIN(consumo.consumo)", "min")
+            .addSelect("AVG(consumo.consumo)", "avg")
+            .where("consumo.telefono = :telefonoId", { telefonoId })
+            .andWhere("consumo.anio = :anio", { anio })
+            .getRawOne();
+
+        if (!result || (result.max === null && result.min === null && result.avg === null)) {
+            throw { code: "NOT_FOUND", message: `No hay consumos para el teléfono ${telefonoId} en el año ${anio}` };
+        }
+
+        // Convertimos a número decimal con 2 decimales
+        return {
+            max: Number(parseFloat(result.max).toFixed(2)),
+            min: Number(parseFloat(result.min).toFixed(2)),
+            avg: Number(parseFloat(result.avg).toFixed(2)),
+        };
+    }
+
 }

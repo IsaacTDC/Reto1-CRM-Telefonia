@@ -45,8 +45,8 @@
 <p-dialog
   [(visible)]="displayConsumptions"
   [modal]="true"
-  [style]="{ width: '500px', height: '7000px' }"
-  header="Consumos del teléfono"
+  [appendTo]="'body'"
+  [style]="{ width: '900px', height: '1000px' }"
   (onHide)="closeConsumptionsModal()"
 >
   <app-phone-consumptions

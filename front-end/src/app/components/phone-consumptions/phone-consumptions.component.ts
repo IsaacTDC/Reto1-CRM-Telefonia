@@ -21,10 +21,10 @@ import { ConsumptionChartComponent } from "../consumption-chart/consumption-char
 export class PhoneConsumptionsComponent implements OnInit{
   @Input() phone: any;
   consumptions: any[] = [];
+  summaryData: { min: number; max: number; avg: number } | null = null;
 
   selectedYear: number = new Date().getFullYear(); //vamos atomar el año actual por defecto
   loading = false;
-
   errorMsg = '';
 
   //estructura para insertar un nuevo consumo
@@ -80,6 +80,9 @@ export class PhoneConsumptionsComponent implements OnInit{
         next: (res: any) => {
           this.consumptions = res.data || [];
           this.loading = false;
+          if (this.consumptions.length > 0) { //vamos a cargar los datos estadisticos aqui ya qeu si no hay datos de consumos no tiene sentido q haya estats
+            this.loadSummary();
+          }
         },
         error: (err) => {
            if (err.status === 404) {
@@ -90,6 +93,18 @@ export class PhoneConsumptionsComponent implements OnInit{
             this.errorMsg = 'Error al cargar los consumos.';
           }
         }
+    });
+  }
+
+  loadSummary() {
+    this.consumptionService.getConsumptionSummary(this.phone.id, this.selectedYear).subscribe({
+      next: (res: any) => {
+        this.summaryData = res.data;
+        //console.log(this.summaryData);
+      },
+      error: () => {
+        this.summaryData = null;
+      }
     });
   }
 
@@ -166,6 +181,7 @@ export class PhoneConsumptionsComponent implements OnInit{
       }
     });
   }
+  exportToPDF(){}
 
   
 }

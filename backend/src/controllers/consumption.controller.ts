@@ -116,4 +116,33 @@ export class ConsumptionController {
         }
     }
 
+    public static async getConsumptionSummaryByPhoneAndYear(req: Request, res: Response) {
+        let response = new RespGeneric();
+
+        try {
+            const telefonoId = Number(req.params.id_telefono);
+            const anio = Number(req.params.anio);
+
+            const summary = await ConsumptionsService.getConsumptionSummaryByPhoneAndYear(telefonoId, anio);
+
+            response.cod = 200;
+            response.msg = "Resumen de consumos obtenido con éxito";
+            response.data = summary;
+
+            return res.json(response);
+        } catch (error: any) {
+            if (error.code === "NOT_FOUND") {
+                response.cod = 404;
+                response.msg = "No hay consumos para este año";
+                response.data = [];
+                return res.status(404).json(response);
+            }
+            console.error(error);
+            response.cod = 500;
+            response.msg = "Error al obtener resumen de consumos";
+            response.data = [];
+            return res.status(500).json(response);
+        }
+    }
+
 }

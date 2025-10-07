@@ -12,8 +12,10 @@ router.get("/:id_telefono/:anio", ConsumptionController.getConsumptionsByPhoneAn
 //PUT /api/consumtions/:id
 router.put("/:id", ConsumptionController.updateConsumption);
 
+//DELETE /api/consumptions/:id
 router.delete("/:id", ConsumptionController.deleteConsumption);
 
-
+// GET /api/consumptions/summary/:id_telefono/:anio
+router.get("/summary/:id_telefono/:anio", ConsumptionController.getConsumptionSummaryByPhoneAndYear);
 
 export default router;
