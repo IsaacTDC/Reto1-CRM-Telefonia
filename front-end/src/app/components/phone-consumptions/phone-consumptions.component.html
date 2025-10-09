@@ -2,11 +2,23 @@
   <div class="flex flex-wrap align-items-end gap-3 mb-4 bg-gray-50 p-3 rounded-lg shadow-sm no-print">
     <h3 class="mb-0">Consumos del teléfono {{ phone?.numero }}</h3>
     <div class="no-print">
-      <p-button
-        icon="pi pi-file-pdf"
-        label="Exportar a PDF"
-        (click)="exportToPDF()"
-      ></p-button>
+      <div class="flex gap-2 no-print">
+        <!-- 📄 Botón para DESCARGAR PDF -->
+        <p-button
+          icon="pi pi-download"
+          label="Descargar PDF"
+          severity="info"
+          (click)="downloadPDF()"
+        ></p-button>
+
+        <!-- 📧 Botón para ENVIAR PDF POR CORREO -->
+        <p-button
+          icon="pi pi-envelope"
+          label="Enviar por correo"
+          severity="success"
+          (click)="sendPDFByEmail()"
+        ></p-button>
+      </div>
     </div>
   </div>
 

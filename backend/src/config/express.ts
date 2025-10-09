@@ -17,7 +17,7 @@ export default class Server {
         this.app.use(express.json());
 
         //con esto permitimos las peticiones desde angular
-        this.app.use(cors({ origin: "http://localhost:4200" })); //solo permite consumir desde este frontend!!!!!
+        this.app.use(cors({ origin: "http://localhost:4200", allowedHeaders: ['Content-Type', 'X-Requested-With', 'Accept'] })); //solo permite consumir desde este frontend!!!!!
 
         // Rutas principal de la API
         this.app.use('/api', indexRoutes);
