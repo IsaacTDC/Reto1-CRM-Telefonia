@@ -18,6 +18,9 @@ export class Cliente{
     @Column({ type: "text", nullable: true })
     nombre!: string
 
+    @Column({ type: "text", nullable: true })
+    correo!: string
+
     @CreateDateColumn({type: "datetime",name: "fecha_alta"})
     fechaAlta!: Date
 

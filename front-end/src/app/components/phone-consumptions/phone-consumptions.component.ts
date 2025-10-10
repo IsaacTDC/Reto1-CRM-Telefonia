@@ -427,9 +427,9 @@ export class PhoneConsumptionsComponent implements OnInit{
   sendPDFByEmail() {
     const pdfObj = this.generatePDFObject();
     if (!pdfObj) return;
-
+    console.log(this.client.correo);
     const payload = {
-      to: 'usuario@ejemplo.com',
+      to: this.client.correo,
       subject: `Informe de consumos ${this.selectedYear}`,
       pdfBase64: pdfObj.base64,
       fileName: pdfObj.fileName,
