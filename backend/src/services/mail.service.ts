@@ -11,17 +11,35 @@ export class MailService{
         },
     });
 
-    public static async sendEmailConsumption() {
-        const info = await this.transporter.sendMail({
-            from: '"Maddison Foo Koch" <maddison53@ethereal.email>',
-            to: "bar@example.com, baz@example.com",
-            subject: "Hello ✔",
-            text: "Hello world?", // plain‑text body
-            html: "<b>Hello world?</b>", // HTML body
-        });
-    }
-}
+    public static async sendEmailConsumption(dataEmail: any) {
+    const { to, subject, pdfBase64, fileName } = dataEmail;
 
+    // Creamos el cuerpo HTML
+    const htmlBody = `
+      <h2>Informe de Consumos Telefónicos</h2>
+      <p>Adjunto encontrarás el informe correspondiente al año seleccionado.</p>
+      <p>Gracias por confiar en <strong>CRM Telefonía</strong>.</p>
+    `;
+
+    // Enviamos el correo con adjunto
+    const info = await this.transporter.sendMail({
+      from: `"CRM Telefonía" <${process.env.MAIL_USER}>`,
+      to,
+      subject,
+      html: htmlBody,
+      attachments: [
+        {
+          filename: fileName,
+          content: pdfBase64.split(';base64,').pop(), // eliminamos prefijo si lo tiene
+          encoding: 'base64',
+        },
+      ],
+    });
+
+    console.log('Correo enviado:', info.messageId);
+    return info;
+  }
+}
 
 
 

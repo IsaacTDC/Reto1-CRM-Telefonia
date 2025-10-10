@@ -398,15 +398,15 @@ export class PhoneConsumptionsComponent implements OnInit{
       { align: 'center' }
     );
 
-    // 🔁 Devuelve el objeto PDF
-    const pdfBlob = doc.output('blob');
-    const base64 = doc.output('datauristring').split(',')[1]; // base64 sin encabezado
+    //Devuelve el objeto PDF
+    const pdfBlob = doc.output('blob'); //documento temporal por ai en el futuro quiro vista preovia, valorar quitarlo
+    const base64 = doc.output('datauristring').split(',')[1]; // aquise codifica en base 64
     const fileName = `Consumos_${this.phone?.numero}_${this.selectedYear}.pdf`;
 
     return { blob: pdfBlob, base64, fileName };
   }
 
-  // 💾 2️⃣ Descargar el PDF
+  // Descargar el PDF
   downloadPDF() {
     const pdfObj = this.generatePDFObject();
     if (!pdfObj) return;
@@ -423,7 +423,7 @@ export class PhoneConsumptionsComponent implements OnInit{
     });
   }
 
-  // 📧 3️⃣ Enviar el PDF por correo (Base64)
+  //Enviar el PDF por correo (Base64)
   sendPDFByEmail() {
     const pdfObj = this.generatePDFObject();
     if (!pdfObj) return;
