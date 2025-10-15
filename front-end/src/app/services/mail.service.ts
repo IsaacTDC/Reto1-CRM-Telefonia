@@ -13,6 +13,6 @@ export class MailService{
     constructor(private http: HttpClient) {}
 
     sendConsumptionsMail(mailData: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/send-consumption`, mailData);
-  }
+      return this.http.post(`${this.apiUrl}/send-consumption`, mailData);
+    }
 }

@@ -6,6 +6,7 @@ import { Entity,
          ManyToOne,
          JoinColumn } from "typeorm";
 import {Telefono} from './phone.entity';
+import { Usuario } from './user.entity';
 
 @Entity({name: 'CLIENTES'})
 export class Cliente{

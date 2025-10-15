@@ -423,7 +423,7 @@ export class PhoneConsumptionsComponent implements OnInit{
     });
   }
 
-  //Enviar el PDF por correo (Base64)
+  //Enviar el PDF por correo usando base64
   sendPDFByEmail() {
     const pdfObj = this.generatePDFObject();
     if (!pdfObj) return;

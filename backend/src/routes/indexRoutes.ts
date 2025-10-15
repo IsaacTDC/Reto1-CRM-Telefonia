@@ -2,7 +2,8 @@ import {Router} from 'express';
 import clientRoutes from './client.routes';
 import phonesRoutes from './phones.routes';
 import consumptionRoutes from "./consumption.routes";
-import mailRoutes from '../routes/mail.routes';
+import mailRoutes from './mail.routes';
+import userRoutes from './user.routes';
 
 const router = Router();
 
@@ -13,6 +14,7 @@ const router = Router();
 router.use('/clients', clientRoutes);
 router.use('/phones',phonesRoutes);
 router.use('/consumptions',consumptionRoutes);
+router.use('/users', userRoutes);
 
 router.use('/mail', mailRoutes);
 
