@@ -17,6 +17,8 @@ const envSchema = Joi.object({ //configuramos las validaciones con JOI
     PORT: Joi.number().default(3000),
     MAIL_USER: Joi.string().required(),
     MAIL_PASSWORD: Joi.string().required(),
+    JWT_SECRET: Joi.string().required(),
+    JWT_EXPIRES_IN: Joi.string().required()
 }).unknown(true);
 
 const {error, value } = envSchema.validate(process.env); //validamos 

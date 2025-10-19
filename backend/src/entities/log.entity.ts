@@ -13,7 +13,7 @@ export class LogAcceso {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @ManyToOne(() => Usuario, (usuario) => usuario.logs, { eager: true }) //un log solo le pertenece a un usuario
+  @ManyToOne(() => Usuario, (usuario) => usuario.logs, { eager: true, onDelete:'NO ACTION' }) //un log solo le pertenece a un usuario
   @JoinColumn({ name: "usuario_id" })
   usuario!: Usuario;
 

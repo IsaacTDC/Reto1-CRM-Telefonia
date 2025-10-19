@@ -22,11 +22,14 @@ export class Usuario {
   @Column({ type: "varchar", length: 64 }) // SHA-256 = 64 chars hex
   password!: string;
 
+  @Column({ type: "boolean" , default:true })
+  isActive!: boolean; //vamos a controlar si los usuarios estan o no activos para mantener la persistencia de los logs por seguridad
+
   @ManyToOne(() => Rol, (rol) => rol.usuarios, { eager: true }) //muchos usuarios pueden tener un msimo rol
   @JoinColumn({ name: "rol_id" })
   rol!: Rol;
 
-  @OneToOne(() => Cliente, { nullable: true, eager: true })
+  @OneToOne(() => Cliente, { nullable: true, eager: true, onDelete:'SET NULL' })
   @JoinColumn({ name: "dni_cliente", referencedColumnName: "dni" })
   cliente?: Cliente | null;
 
